@@ -1,0 +1,26 @@
+{
+  "name": "bankin-tech-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cgaspart/bankin-tech-test.git"
+  },
+  "author": "cgaspart",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cgaspart/bankin-tech-test/issues"
+  },
+  "homepage": "https://github.com/cgaspart/bankin-tech-test#readme",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "opn": "^6.0.0",
+    "qs": "^6.9.1"
+  }
+}
