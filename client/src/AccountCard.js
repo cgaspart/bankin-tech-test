@@ -2,7 +2,6 @@ import React from 'react';
 import { Card, Icon } from 'semantic-ui-react'
 
 const AccountCard = (props) => {
-    console.log(props.accounts)
   const currency = {
       GBP: <Icon name='gbp'/>,
       USD: <Icon name='usd'/>,
