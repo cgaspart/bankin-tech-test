@@ -20,7 +20,7 @@ const privateKey = fs.readFileSync(privateKeyName);
 const token = jwt.sign(payload, privateKey, { algorithm: 'RS256', expiresIn: 60 * 60});
 
 let code = null;
-let access_token = 'oa_sand_ktSKWNXzt9sZcAlAlrRLY4aslQvvCs4ojeT8AfvSQ3c';
+let access_token = null;
 let refresh_token = 'oa_sand_lOuqhndUdrq6A2aeK3lDW7GTUr-2D0W0LjT90fHORSo';
 
 function getToken(){
