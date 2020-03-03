@@ -94,6 +94,21 @@ function getAccount(error){
         return error ? err.message : getAccount(1);
     })
 }
+
+function getTx(error, options){
+    return axios({
+        method: "GET",
+        url: `https://sandbox-b2b.revolut.com/api/1.0/transactions${options}`,
+        headers: {Authorization: `Bearer ${access_token}`},
+    }).then(res => {return res.data})
+    .catch(err => {
+        if(err.response.status == 401){
+            refreshToken();
+        }
+        return error ? err.message : getTx(1, options);
+    })
+}
+
 app.use(cors())
 app.get('/', function(req) {
     code = req.query.code
@@ -110,9 +125,23 @@ app.get('/getAccount', function (req, res){
     })
 })
 
+app.get('/getTransactions', function (req, res){
+    res.status = 200;
+    let options = '';
+
+    if (req.body && req.body.startDate && req.body.endDate){
+        options = `?from=${req.body.startDate}&to=${req.body.endDate}`
+    }
+    getTx(0, options)
+    .then(result => {console.log(result); res.send(result)})
+    .catch(err => {
+        res.status = 400;
+        res.send(err)
+    })
+})
+
 function main(){
     if(!access_token){
-        console.log('bro')
         opn(`https://sandbox-business.revolut.com/app-confirm?client_id=${client_id}&redirect_uri=http://127.0.0.1/`);
     } else{getAccount()}
 }
