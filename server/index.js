@@ -5,6 +5,9 @@ const axios = require('axios').default
 const opn = require('opn');
 var cors = require('cors');
 
+
+let config = require('./config.json');
+
 const app = express()
 const qs = require('qs')
 const privateKeyName = 'privatekey.pem'
@@ -20,8 +23,19 @@ const privateKey = fs.readFileSync(privateKeyName);
 const token = jwt.sign(payload, privateKey, { algorithm: 'RS256', expiresIn: 60 * 60});
 
 let code = null;
-let access_token = null;
-let refresh_token = 'oa_sand_lOuqhndUdrq6A2aeK3lDW7GTUr-2D0W0LjT90fHORSo';
+
+let access_token = config.access_token;
+let refresh_token = config.refresh_token;
+
+function updateConfig(){
+    let newConfig = { 
+        access_token: access_token,
+        refresh_token: refresh_token
+    }
+    
+    let data = JSON.stringify(newConfig, null, 2);
+    fs.writeFileSync('config.json', data);
+}
 
 function getToken(){
     axios({
@@ -40,13 +54,14 @@ function getToken(){
         console.log('acces: ', access_token)
         refresh_token = res.data.refresh_token;
         console.log('refresh:', refresh_token)
+        updateConfig();
         getAccount();
     })
     .catch(err => {console.log(err.message)})
 }
 
 function refreshToken(){
-    axios({
+    return axios({
         method: 'POST',
         url: 'https://sandbox-b2b.revolut.com/api/1.0/auth/token',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -60,6 +75,7 @@ function refreshToken(){
     }).then(res => {
         access_token = res.data.access_token;
         refresh_token = res.data.refresh_token;
+        updateConfig();
         getAccount();
     })
     .catch(err => {console.log(err.message)})
@@ -85,7 +101,6 @@ app.get('/', function(req) {
 });
 
 app.get('/getAccount', function (req, res){
-    console.log('hello')
     res.status = 200;
     getAccount()
     .then(result => {console.log(result); res.send(result)})
@@ -97,6 +112,7 @@ app.get('/getAccount', function (req, res){
 
 function main(){
     if(!access_token){
+        console.log('bro')
         opn(`https://sandbox-business.revolut.com/app-confirm?client_id=${client_id}&redirect_uri=http://127.0.0.1/`);
     } else{getAccount()}
 }

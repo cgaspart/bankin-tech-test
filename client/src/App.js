@@ -8,7 +8,6 @@ import './App.css';
 const App = () => {
  const [accounts, setAccount] = useState()
   useEffect(() => {
-    console.log('hello')
     axios.get('http://localhost/getAccount')
     .then(res => {setAccount(res.data)})
     .catch(err => {console.log(err)})
