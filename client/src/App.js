@@ -4,6 +4,7 @@ import axios from 'axios'
 
 import AccountCard from './AccountCard'
 import GetTx from './GetTx'
+import TxTab from './TxTab'
 import './App.css';
 
 
@@ -45,7 +46,7 @@ const App = () => {
     </Grid>
     <Divider />
     <Grid textAlign='center' verticalAlign='top' columns='equal' style={{paddingTop: '5vh'}}>
-      {console.log(tx)}      
+      <TxTab tx={tx} />
     </Grid>
     </>
   )
