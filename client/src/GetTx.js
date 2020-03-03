@@ -1,45 +1,62 @@
 import React, {useState} from 'react'
-import {Grid, Form} from 'semantic-ui-react'
-import { DateTimeInput } from 'semantic-ui-calendar-react';
+import {Grid, Form, Button} from 'semantic-ui-react'
+import { DateInput } from 'semantic-ui-calendar-react';
 
-const GetTx = () => {
-
-    const [{startDate, endDate}, setState] = useState({startDate: '', endDate: ''})
-
-    function handleDateChange(event, { name, value }){
-        setState(prevState => ({ ...prevState, [name]: value }));
+class GetTx extends React.Component {
+    constructor(props) {
+      super(props);
+   
+      this.state = {
+        startDate: '',
+        endDate: ''
+      };
+    }
+   
+    handleChange = (event, {name, value}) => {
+      if (this.state.hasOwnProperty(name)) {
+        this.setState({ [name]: value });
       }
-
-    return (
+    }
+   
+    render() {
+      return (
         <>
         <Grid.Column>
                 <Form.Field>
                   <label>Start Date</label>
-                  <DateTimeInput
+                  <DateInput
                     id='startDate'
                     name="startDate"
-                    dateTimeFormat='YYYY-MM-DD HH:mm'
-                    value={startDate}
+                    dateTimeFormat='YYYY-MM-DD'
+                    value={this.state.startDate}
                     iconPosition="left"
-                    onChange={handleDateChange}
+                    onChange={this.handleChange}
                   />
+                </Form.Field>
+              </Grid.Column>
+              <Grid.Column>
+                <Form.Field>
+                  <Button
+                    color='teal'
+                    onClick={() => {this.props.updateTx(this.state.startDate, this.state.endDate)}}>Refresh</Button>
                 </Form.Field>
               </Grid.Column>
               <Grid.Column>
               <Form.Field>
                   <label>End Date</label>
-                  <DateTimeInput
+                  <DateInput
                     id='endDate'
                     name="endDate"
-                    dateTimeFormat='YYYY-MM-DD HH:mm'
-                    value={endDate}
+                    dateTimeFormat='YYYY-MM-DD'
+                    value={this.state.endDate}
                     iconPosition="left"
-                    onChange={handleDateChange}
+                    onChange={this.handleChange}
                   />
                 </Form.Field>
               </Grid.Column>
         </>
-    )
+      )
+    }
 }
 
 export default GetTx

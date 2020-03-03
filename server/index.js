@@ -55,13 +55,12 @@ function getToken(){
         refresh_token = res.data.refresh_token;
         console.log('refresh:', refresh_token)
         updateConfig();
-        getAccount();
     })
     .catch(err => {console.log(err.message)})
 }
 
 function refreshToken(){
-    return axios({
+    axios({
         method: 'POST',
         url: 'https://sandbox-b2b.revolut.com/api/1.0/auth/token',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -74,9 +73,8 @@ function refreshToken(){
         })
     }).then(res => {
         access_token = res.data.access_token;
-        refresh_token = res.data.refresh_token;
+        console.log('acces: ', access_token)
         updateConfig();
-        getAccount();
     })
     .catch(err => {console.log(err.message)})
 }
@@ -88,9 +86,7 @@ function getAccount(error){
         headers: {Authorization: `Bearer ${access_token}`},
     }).then(res => {return res.data})
     .catch(err => {
-        if(err.response.status == 401){
-            refreshToken();
-        }
+        refreshToken()
         return error ? err.message : getAccount(1);
     })
 }
@@ -102,9 +98,7 @@ function getTx(error, options){
         headers: {Authorization: `Bearer ${access_token}`},
     }).then(res => {return res.data})
     .catch(err => {
-        if(err.response.status == 401){
-            refreshToken();
-        }
+        refreshToken();
         return error ? err.message : getTx(1, options);
     })
 }
@@ -129,11 +123,14 @@ app.get('/getTransactions', function (req, res){
     res.status = 200;
     let options = '';
 
-    if (req.body && req.body.startDate && req.body.endDate){
-        options = `?from=${req.body.startDate}&to=${req.body.endDate}`
+    console.log(req.query)
+
+    if (req.query && req.query.startDate && req.query.endDate){
+        options = `?from=${req.query.startDate}&to=${req.query.endDate}`
     }
+    console.log(options)
     getTx(0, options)
-    .then(result => {console.log(result); res.send(result)})
+    .then(result => {res.send(result)})
     .catch(err => {
         res.status = 400;
         res.send(err)
@@ -143,7 +140,7 @@ app.get('/getTransactions', function (req, res){
 function main(){
     if(!access_token){
         opn(`https://sandbox-business.revolut.com/app-confirm?client_id=${client_id}&redirect_uri=http://127.0.0.1/`);
-    } else{getAccount()}
+    }
 }
 
 main();

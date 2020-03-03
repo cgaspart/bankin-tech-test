@@ -10,11 +10,19 @@ import './App.css';
 const App = () => {
 
   const [accounts, setAccounts] = useState([])
+  const [tx, setTx] = useState([])
   useEffect(() => {
     axios.get('http://localhost/getAccount')
     .then(res => {setAccounts(res.data)})
     .catch(err => {console.log(err)})
   }, [])
+
+  function updateTx(startDate, endDate){
+    console.log(startDate, endDate)
+    axios.get(`http://localhost/getTransactions`, {params: {startDate: startDate, endDate: endDate}})
+    .then(res => {setTx(res.data); console.log(res.data)})
+    .catch(err => {console.log(err)})
+  }
 
   return (
     <>
@@ -33,11 +41,11 @@ const App = () => {
       <AccountCard accounts={accounts} />
     </Card.Group>
     <Grid textAlign='center' verticalAlign='top' columns='equal' style={{paddingTop: '5vh'}}>
-      <GetTx />        
+      <GetTx updateTx={updateTx} />        
     </Grid>
     <Divider />
     <Grid textAlign='center' verticalAlign='top' columns='equal' style={{paddingTop: '5vh'}}>
-      <GetTx />        
+      {console.log(tx)}      
     </Grid>
     </>
   )
